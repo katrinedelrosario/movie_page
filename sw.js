@@ -1,6 +1,6 @@
-const staticCacheName = "site-static-v2";
+const staticCacheName = "site-static-v2"
 
-const dynamicCacheName = "site-dynamic-v1";
+const dynamicCacheName = "site-dynamic-v1"
 
 const assets = [
   "./",
@@ -12,48 +12,48 @@ const assets = [
   "./assets/styles/loader.css",
   "./pages/fallback.html",
   "./assets/images/MOVIE CITY.png",
-];
+]
 
 const limitCacheSize = (cacheName, numAllowedFiles) => {
   caches.open(cacheName).then((cache) => {
     cache.keys().then((keys) => {
       if (keys.length > numAllowedFiles) {
-        cache.delete(keys[0]).then(limitCacheSize(cacheName, numAllowedFiles));
+        cache.delete(keys[0]).then(limitCacheSize(cacheName, numAllowedFiles))
       }
-    });
-  });
-};
+    })
+  })
+}
 
 self.addEventListener("install", (event) => {
-  //console.log("Service Worker has been installed");
+  //console.log("Service Worker has been installed")
 
   event.waitUntil(
     caches.open(staticCacheName).then((cache) => {
-      //console.log("Caching all assets");
-      cache.addAll(assets);
+      //console.log("Caching all assets")
+      cache.addAll(assets)
     })
-  );
-});
+  )
+})
 self.addEventListener("activate", (event) => {
-  //console.log("Service Worker has been activated");
+  //console.log("Service Worker has been activated")
 
-  console.log("Service worker has been activated...");
+  console.log("Service worker has been activated...")
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
         keys
           .filter((key) => key !== staticCacheName && key !== dynamicCacheName)
           .map((key) => caches.delete(key))
-      );
+      )
     })
-  );
-  return;
-});
+  )
+  return
+})
 
 self.addEventListener("fetch", (event) => {
-  limitCacheSize(dynamicCacheName, 2);
+  limitCacheSize(dynamicCacheName, 2)
 
-  if (!(event.request.url.indexOf("http") === 0)) return;
+  if (!(event.request.url.indexOf("http") === 0)) return
   event.respondWith(
     caches
       .match(event.request)
@@ -62,13 +62,13 @@ self.addEventListener("fetch", (event) => {
           cacheRes ||
           fetch(event.request).then((fetchRes) => {
             return caches.open(dynamicCacheName).then((cache) => {
-              cache.put(event.request.url, fetchRes.clone());
-              limitCacheSize(dynamicCacheName, 2);
-              return fetchRes;
-            });
+              cache.put(event.request.url, fetchRes.clone())
+              limitCacheSize(dynamicCacheName, 2)
+              return fetchRes
+            })
           })
-        );
+        )
       })
-      .catch(() => caches.match("/pages/fallback.html"))
-  );
-});
+      .catch(() => caches.match("./pages/fallback.html"))
+  )
+})

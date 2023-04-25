@@ -1,4 +1,4 @@
-let ApiData = [];
+let ApiData = []
 
 fetch('https://reqres.in/api/users/', {
 
@@ -14,16 +14,16 @@ fetch('https://reqres.in/api/users/', {
 	})
 
 	.then((users) => {
-		console.log(users);
+		console.log(users)
 		ApiData = users.data //Data inside users
 	})
 	.catch((error) => {
-		console.error(error); //Catches error if promise fails
+		console.error(error) //Catches error if promise fails
 	})
 	.finally(() => {
 		for (let i = 0; i < ApiData.length; i++) {
-			let user = ApiData[i];
-			createElm(user);
+			let user = ApiData[i]
+			createElm(user)
 		}
 	})
 
@@ -40,4 +40,4 @@ const createElm = (user) => { //Creates innerHTML elements
 </figure>
 `
 }
-console.log();
+console.log()
